@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống tra cứu Nghị định</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .document-list {
+            margin-top: 20px;
+        }
+
+        .document-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.3s;
+        }
+
+        .document-item:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .document-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .document-item a:hover {
+            text-decoration: underline;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .result-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .result-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .result-item .source {
+            color: #667eea;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            flex: 1;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .stat-box .label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Hệ thống tra cứu Nghị định</h1>
+            <p>Quản lý và tìm kiếm văn bản pháp luật một cách dễ dàng</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Thống kê -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="number" id="docCount">0</div>
+                    <div class="label">Văn bản</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="searchCount">0</div>
+                    <div class="label">Lượt tra cứu</div>
+                </div>
+            </div>
+
+            <!-- Thêm văn bản -->
+            <div class="section">
+                <h2>📝 Thêm văn bản mới</h2>
+                <div class="input-group">
+                    <input type="text" id="docTitle" placeholder="Tên văn bản (VD: Nghị định 123/2024/NĐ-CP)">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="docUrl" placeholder="Đường link văn bản">
+                    <button onclick="addDocument()">Thêm văn bản</button>
+                </div>
+
+                <div class="document-list" id="documentList"></div>
+            </div>
+
+            <!-- Tìm kiếm -->
+            <div class="section">
+                <h2>🔍 Tra cứu điều khoản</h2>
+                <div class="input-group">
+                    <input type="text" id="searchQuery" placeholder="Nhập từ khóa tìm kiếm (VD: điều 5, khoản 2, quyền lợi người lao động...)">
+                    <button onclick="searchDocuments()">Tìm kiếm</button>
+                </div>
+
+                <div id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let documents = [];
+        let searchCounter = 0;
+
+        // Load dữ liệu từ bộ nhớ
+        function loadData() {
+            const saved = localStorage.getItem('legalDocuments');
+            if (saved) {
+                documents = JSON.parse(saved);
+            }
+            const counter = localStorage.getItem('searchCounter');
+            if (counter) {
+                searchCounter = parseInt(counter);
+            }
+            updateUI();
+        }
+
+        // Lưu dữ liệu
+        function saveData() {
+            localStorage.setItem('legalDocuments', JSON.stringify(documents));
+            localStorage.setItem('searchCounter', searchCounter.toString());
+        }
+
+        // Thêm văn bản
+        function addDocument() {
+            const title = document.getElementById('docTitle').value.trim();
+            const url = document.getElementById('docUrl').value.trim();
+
+            if (!title || !url) {
+                alert('Vui lòng nhập đầy đủ tên và đường link văn bản!');
+                return;
+            }
+
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                alert('Đường link phải bắt đầu bằng http:// hoặc https://');
+                return;
+            }
+
+            documents.push({
+                id: Date.now(),
+                title: title,
+                url: url,
+                addedDate: new Date().toLocaleDateString('vi-VN')
+            });
+
+            document.getElementById('docTitle').value = '';
+            document.getElementById('docUrl').value = '';
+
+            saveData();
+            updateUI();
+            alert('Đã thêm văn bản thành công!');
+        }
+
+        // Xóa văn bản
+        function deleteDocument(id) {
+            if (confirm('Bạn có chắc muốn xóa văn bản này?')) {
+                documents = documents.filter(doc => doc.id !== id);
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Tìm kiếm
+        async function searchDocuments() {
+            const query = document.getElementById('searchQuery').value.trim();
+            
+            if (!query) {
+                alert('Vui lòng nhập từ khóa tìm kiếm!');
+                return;
+            }
+
+            if (documents.length === 0) {
+                alert('Chưa có văn bản nào trong hệ thống. Vui lòng thêm văn bản trước!');
+                return;
+            }
+
+            searchCounter++;
+            saveData();
+            updateStats();
+
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div class="loading">⏳ Đang tìm kiếm trong các văn bản...</div>';
+
+            // Mô phỏng tìm kiếm
+            setTimeout(() => {
+                const results = [];
+                
+                documents.forEach(doc => {
+                    const lowerQuery = query.toLowerCase();
+                    const lowerTitle = doc.title.toLowerCase();
+                    
+                    if (lowerTitle.includes(lowerQuery)) {
+                        results.push({
+                            title: doc.title,
+                            url: doc.url,
+                            snippet: `Văn bản có chứa từ khóa "${query}". Nhấn vào link để xem chi tiết.`,
+                            relevance: 'cao'
+                        });
+                    }
+                });
+
+                displaySearchResults(results, query);
+            }, 800);
+        }
+
+        // Hiển thị kết quả tìm kiếm
+        function displaySearchResults(results, query) {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h3>😕 Không tìm thấy kết quả</h3>
+                        <p>Không tìm thấy văn bản nào chứa từ khóa "${query}"</p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Gợi ý: Thử tìm kiếm với từ khóa khác hoặc kiểm tra lại chính tả</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `<h3 style="margin-bottom: 15px;">Tìm thấy ${results.length} kết quả cho "${query}":</h3>`;
+            
+            results.forEach(result => {
+                html += `
+                    <div class="result-item">
+                        <h3>${result.title}</h3>
+                        <p>${result.snippet}</p>
+                        <div class="source">
+                            <a href="${result.url}" target="_blank">🔗 Xem văn bản đầy đủ</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        // Cập nhật giao diện
+        function updateUI() {
+            updateDocumentList();
+            updateStats();
+        }
+
+        // Cập nhật danh sách văn bản
+        function updateDocumentList() {
+            const listDiv = document.getElementById('documentList');
+            
+            if (documents.length === 0) {
+                listDiv.innerHTML = '<div class="empty-state">Chưa có văn bản nào. Hãy thêm văn bản đầu tiên!</div>';
+                return;
+            }
+
+            let html = '';
+            documents.forEach(doc => {
+                html += `
+                    <div class="document-item">
+                        <div>
+                            <strong>${doc.title}</strong>
+                            <br>
+                            <small style="color: #999;">Thêm ngày: ${doc.addedDate}</small>
+                            <br>
+                            <a href="${doc.url}" target="_blank">🔗 Xem văn bản</a>
+                        </div>
+                        <button class="delete-btn" onclick="deleteDocument(${doc.id})">Xóa</button>
+                    </div>
+                `;
+            });
+
+            listDiv.innerHTML = html;
+        }
+
+        // Cập nhật thống kê
+        function updateStats() {
+            document.getElementById('docCount').textContent = documents.length;
+            document.getElementById('searchCount').textContent = searchCounter;
+        }
+
+        // Enter để submit
+        document.getElementById('docUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addDocument();
+        });
+
+        document.getElementById('searchQuery').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchDocuments();
+        });
+
+        // Khởi tạo
+        loadData();
+    </script>
+</body>
+</html>
