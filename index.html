@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống tra cứu Nghị định</title>
+    <title>Hệ thống tra cứu Nghị định - tungti28496</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,13 +14,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -28,23 +29,88 @@
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
         }
 
         header h1 {
-            font-size: 2em;
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
 
-        header p {
+        header .subtitle {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: rgba(30, 60, 114, 0.05);
+        }
+
+        .tab-btn.active {
+            color: #1e3c72;
+            background: white;
+            border-bottom: 3px solid #1e3c72;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .label {
+            font-size: 0.95em;
             opacity: 0.9;
         }
 
-        .main-content {
-            padding: 30px;
+        .stat-box.green {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
 
         .section {
@@ -52,23 +118,28 @@
             padding: 25px;
             background: #f8f9fa;
             border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #1e3c72;
         }
 
         .section h2 {
             color: #333;
             margin-bottom: 20px;
             font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .input-group {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
-        input[type="text"] {
+        input[type="text"], select, input[type="file"] {
             flex: 1;
+            min-width: 200px;
             padding: 12px 15px;
             border: 2px solid #ddd;
             border-radius: 8px;
@@ -76,14 +147,14 @@
             transition: border-color 0.3s;
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #1e3c72;
         }
 
         button {
             padding: 12px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -93,13 +164,58 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         button:active {
             transform: translateY(0);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-view {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .upload-method {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .upload-method label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-method input[type="radio"] {
+            width: auto;
+            min-width: auto;
+        }
+
+        .upload-method label:has(input:checked) {
+            border-color: #1e3c72;
+            background: #e3f2fd;
         }
 
         .document-list {
@@ -108,38 +224,56 @@
 
         .document-item {
             background: white;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
             border-radius: 8px;
             border: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             transition: box-shadow 0.3s;
         }
 
         .document-item:hover {
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .document-item a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 10px;
         }
 
-        .document-item a:hover {
-            text-decoration: underline;
+        .document-title h3 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+            font-size: 1.2em;
         }
 
-        .delete-btn {
-            background: #dc3545;
-            padding: 8px 15px;
+        .document-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
             font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
         }
 
-        .delete-btn:hover {
-            background: #c82333;
+        .document-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            background: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
         }
 
         .search-results {
@@ -152,60 +286,133 @@
             margin-bottom: 15px;
             border-radius: 8px;
             border-left: 4px solid #28a745;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .result-item h3 {
-            color: #333;
+            color: #1e3c72;
             margin-bottom: 10px;
         }
 
-        .result-item p {
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .match-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .match-header strong {
+            color: #1e3c72;
+        }
+
+        .match-header a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .match-header a:hover {
+            text-decoration: underline;
+        }
+
+        .match-content {
             color: #666;
             line-height: 1.6;
         }
 
-        .result-item .source {
-            color: #667eea;
-            font-size: 0.9em;
-            margin-top: 10px;
+        .match-content mark {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
         }
 
         .empty-state {
             text-align: center;
-            padding: 40px;
+            padding: 60px 20px;
             color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
         }
 
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #667eea;
+            padding: 40px;
+            color: #1e3c72;
+            font-size: 1.1em;
         }
 
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
         }
 
-        .stat-box {
-            flex: 1;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 30px;
             text-align: center;
-        }
-
-        .stat-box .number {
-            font-size: 2em;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .stat-box .label {
             color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: #1e3c72;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .document-header {
+                flex-direction: column;
+            }
+
+            .document-actions {
+                width: 100%;
+            }
+
+            .btn-small {
+                flex: 1;
+            }
         }
     </style>
 </head>
@@ -213,237 +420,495 @@
     <div class="container">
         <header>
             <h1>🏛️ Hệ thống tra cứu Nghị định</h1>
-            <p>Quản lý và tìm kiếm văn bản pháp luật một cách dễ dàng</p>
+            <p class="subtitle">tungti28496.github.io - Hỗ trợ upload file Word</p>
         </header>
 
-        <div class="main-content">
-            <!-- Thống kê -->
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('search')">
+                🔍 TÌM KIẾM VĂN BẢN
+            </button>
+            <button class="tab-btn" onclick="switchTab('manage')">
+                📝 CẬP NHẬT VĂN BẢN
+            </button>
+        </div>
+
+        <!-- Tab 1: Tìm kiếm -->
+        <div id="searchTab" class="tab-content active">
             <div class="stats">
                 <div class="stat-box">
-                    <div class="number" id="docCount">0</div>
-                    <div class="label">Văn bản</div>
+                    <div class="number" id="totalDocs">0</div>
+                    <div class="label">Tổng văn bản</div>
                 </div>
                 <div class="stat-box">
-                    <div class="number" id="searchCount">0</div>
+                    <div class="number" id="totalSearches">0</div>
                     <div class="label">Lượt tra cứu</div>
                 </div>
+                <div class="stat-box">
+                    <div class="number" id="nghiDinhCount">0</div>
+                    <div class="label">Nghị định</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="thongTuCount">0</div>
+                    <div class="label">Thông tư</div>
+                </div>
+                <div class="stat-box green">
+                    <div class="number" id="fileCount">0</div>
+                    <div class="label">File Word</div>
+                </div>
             </div>
 
-            <!-- Thêm văn bản -->
             <div class="section">
-                <h2>📝 Thêm văn bản mới</h2>
-                <div class="input-group">
-                    <input type="text" id="docTitle" placeholder="Tên văn bản (VD: Nghị định 123/2024/NĐ-CP)">
-                </div>
-                <div class="input-group">
-                    <input type="text" id="docUrl" placeholder="Đường link văn bản">
-                    <button onclick="addDocument()">Thêm văn bản</button>
+                <h2>🔍 Tra cứu nội dung văn bản (Quét toàn bộ file Word)</h2>
+                
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <select id="filterType" onchange="filterDocuments()">
+                        <option value="all">Tất cả loại văn bản</option>
+                        <option value="nghi-dinh">Nghị định</option>
+                        <option value="thong-tu">Thông tư</option>
+                        <option value="quyet-dinh">Quyết định</option>
+                        <option value="khac">Khác</option>
+                    </select>
+                    
+                    <select id="filterYear" onchange="filterDocuments()">
+                        <option value="all">Tất cả năm</option>
+                    </select>
                 </div>
 
-                <div class="document-list" id="documentList"></div>
-            </div>
-
-            <!-- Tìm kiếm -->
-            <div class="section">
-                <h2>🔍 Tra cứu điều khoản</h2>
                 <div class="input-group">
-                    <input type="text" id="searchQuery" placeholder="Nhập từ khóa tìm kiếm (VD: điều 5, khoản 2, quyền lợi người lao động...)">
-                    <button onclick="searchDocuments()">Tìm kiếm</button>
+                    <input type="text" id="searchQuery" placeholder="Nhập từ khóa tìm kiếm (VD: điều 5, khoản 2, lao động, bảo hiểm...)">
+                    <button onclick="searchDocuments()" id="searchBtn">🔍 Tìm kiếm</button>
                 </div>
 
                 <div id="searchResults"></div>
             </div>
+
+            <div class="section">
+                <h2>📋 Danh sách văn bản</h2>
+                <div id="documentListSearch"></div>
+            </div>
         </div>
+
+        <!-- Tab 2: Quản lý -->
+        <div id="manageTab" class="tab-content">
+            <div class="section">
+                <h2>➕ Thêm văn bản mới</h2>
+                
+                <div class="upload-method">
+                    <label>
+                        <input type="radio" name="uploadMethod" value="url" checked onchange="toggleUploadMethod()">
+                        🔗 Thêm bằng Link
+                    </label>
+                    <label>
+                        <input type="radio" name="uploadMethod" value="file" onchange="toggleUploadMethod()">
+                        📁 Upload File Word
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="docTitle" placeholder="Tên văn bản (VD: Nghị định 123/2024/NĐ-CP)">
+                </div>
+                
+                <div class="input-group">
+                    <select id="docType">
+                        <option value="nghi-dinh">Nghị định</option>
+                        <option value="thong-tu">Thông tư</option>
+                        <option value="quyet-dinh">Quyết định</option>
+                        <option value="khac">Khác</option>
+                    </select>
+                    
+                    <input type="text" id="docYear" placeholder="Năm ban hành (VD: 2024)">
+                </div>
+                
+                <div class="input-group" id="urlInput">
+                    <input type="text" id="docUrl" placeholder="Đường link văn bản (https://...)">
+                </div>
+                
+                <div class="input-group" id="fileInput" style="display: none;">
+                    <input type="file" id="docFile" accept=".doc,.docx" onchange="handleFileSelect(event)">
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" id="docDescription" placeholder="Mô tả ngắn về văn bản (không bắt buộc)">
+                </div>
+                
+                <button onclick="addDocument()" id="addBtn">➕ Thêm văn bản</button>
+            </div>
+
+            <div class="section">
+                <h2>📚 Quản lý văn bản</h2>
+                <div id="documentListManage"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Hệ thống tra cứu văn bản pháp luật</strong></p>
+            <p>Website: <a href="https://tungti28496.github.io/tungti.github.io" target="_blank">tungti28496.github.io/tungti.github.io</a></p>
+            <p style="font-size: 0.9em; margin-top: 15px;">© 2024 - Phát triển để phục vụ tra cứu văn bản pháp luật</p>
+        </footer>
     </div>
 
     <script>
         let documents = [];
         let searchCounter = 0;
+        let selectedFileData = null;
 
-        // Load dữ liệu từ bộ nhớ
+        const typeNames = {
+            'nghi-dinh': 'Nghị định',
+            'thong-tu': 'Thông tư',
+            'quyet-dinh': 'Quyết định',
+            'khac': 'Khác'
+        };
+
+        const articleTypeNames = {
+            'article': 'Điều',
+            'clause': 'Khoản',
+            'chapter': 'Chương',
+            'section': 'Mục'
+        };
+
+        // Load data
         function loadData() {
             const saved = localStorage.getItem('legalDocuments');
-            if (saved) {
-                documents = JSON.parse(saved);
-            }
             const counter = localStorage.getItem('searchCounter');
-            if (counter) {
-                searchCounter = parseInt(counter);
-            }
+            
+            if (saved) documents = JSON.parse(saved);
+            if (counter) searchCounter = parseInt(counter);
+            
             updateUI();
+            updateYearFilter();
         }
 
-        // Lưu dữ liệu
+        // Save data
         function saveData() {
             localStorage.setItem('legalDocuments', JSON.stringify(documents));
             localStorage.setItem('searchCounter', searchCounter.toString());
         }
 
-        // Thêm văn bản
-        function addDocument() {
-            const title = document.getElementById('docTitle').value.trim();
-            const url = document.getElementById('docUrl').value.trim();
-
-            if (!title || !url) {
-                alert('Vui lòng nhập đầy đủ tên và đường link văn bản!');
-                return;
-            }
-
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                alert('Đường link phải bắt đầu bằng http:// hoặc https://');
-                return;
-            }
-
-            documents.push({
-                id: Date.now(),
-                title: title,
-                url: url,
-                addedDate: new Date().toLocaleDateString('vi-VN')
-            });
-
-            document.getElementById('docTitle').value = '';
-            document.getElementById('docUrl').value = '';
-
-            saveData();
+        // Switch tab
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+            
             updateUI();
-            alert('Đã thêm văn bản thành công!');
         }
 
-        // Xóa văn bản
+        // Toggle upload method
+        function toggleUploadMethod() {
+            const method = document.querySelector('input[name="uploadMethod"]:checked').value;
+            const urlInput = document.getElementById('urlInput');
+            const fileInput = document.getElementById('fileInput');
+            
+            if (method === 'url') {
+                urlInput.style.display = 'flex';
+                fileInput.style.display = 'none';
+            } else {
+                urlInput.style.display = 'none';
+                fileInput.style.display = 'flex';
+            }
+        }
+
+        // Handle file selection
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.name.endsWith('.docx') && !file.name.endsWith('.doc')) {
+                alert('⚠️ Vui lòng chọn file Word (.doc hoặc .docx)!');
+                event.target.value = '';
+                return;
+            }
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                
+                selectedFileData = {
+                    name: file.name,
+                    content: result.value
+                };
+                
+                console.log('File loaded successfully:', file.name);
+            } catch (error) {
+                alert('❌ Lỗi khi đọc file: ' + error.message);
+                event.target.value = '';
+                selectedFileData = null;
+            }
+        }
+
+        // Extract articles from content
+        function extractArticles(content) {
+            const articles = [];
+            
+            const patterns = [
+                {
+                    regex: /Điều\s+(\d+)[.:]\s*([^\n]+(?:\n(?!Điều\s+\d+)[^\n]+)*)/gi,
+                    type: 'article',
+                    label: 'Điều'
+                },
+                {
+                    regex: /Khoản\s+(\d+)[.:]\s*([^\n]+(?:\n(?!Khoản\s+\d+)[^\n]+)*)/gi,
+                    type: 'clause',
+                    label: 'Khoản'
+                },
+                {
+                    regex: /Chương\s+([IVXLCDM]+)[.:]\s*([^\n]+)/gi,
+                    type: 'chapter',
+                    label: 'Chương'
+                },
+                {
+                    regex: /Mục\s+(\d+)[.:]\s*([^\n]+)/gi,
+                    type: 'section',
+                    label: 'Mục'
+                }
+            ];
+
+            patterns.forEach(pattern => {
+                const regex = new RegExp(pattern.regex);
+                let match;
+                while ((match = regex.exec(content)) !== null) {
+                    const startPos = match.index;
+                    const endPos = Math.min(startPos + 500, content.length);
+                    const context = content.substring(startPos, endPos);
+
+                    articles.push({
+                        type: pattern.type,
+                        label: pattern.label,
+                        number: match[1],
+                        title: match[2].trim(),
+                        content: context,
+                        fullText: match[0],
+                        position: match.index
+                    });
+                }
+            });
+
+            articles.sort((a, b) => a.position - b.position);
+            return articles;
+        }
+
+        // Add document
+        async function addDocument() {
+            const method = document.querySelector('input[name="uploadMethod"]:checked').value;
+            const title = document.getElementById('docTitle').value.trim();
+            const type = document.getElementById('docType').value;
+            const year = document.getElementById('docYear').value.trim();
+            const description = document.getElementById('docDescription').value.trim();
+
+            if (!title || !year) {
+                alert('⚠️ Vui lòng nhập đầy đủ tên văn bản và năm!');
+                return;
+            }
+
+            const yearNum = parseInt(year);
+            if (isNaN(yearNum) || yearNum < 1900 || yearNum > 2100) {
+                alert('⚠️ Vui lòng nhập năm hợp lệ (1900-2100)!');
+                return;
+            }
+
+            const addBtn = document.getElementById('addBtn');
+            addBtn.disabled = true;
+            addBtn.textContent = '⏳ Đang xử lý...';
+
+            try {
+                let newDoc;
+
+                if (method === 'file') {
+                    if (!selectedFileData) {
+                        alert('⚠️ Vui lòng chọn file Word!');
+                        addBtn.disabled = false;
+                        addBtn.textContent = '➕ Thêm văn bản';
+                        return;
+                    }
+
+                    const articles = extractArticles(selectedFileData.content);
+
+                    newDoc = {
+                        id: Date.now(),
+                        title: title,
+                        type: type,
+                        year: yearNum,
+                        url: null,
+                        fileName: selectedFileData.name,
+                        description: description,
+                        addedDate: new Date().toLocaleDateString('vi-VN'),
+                        content: selectedFileData.content,
+                        articles: articles,
+                        source: 'file'
+                    };
+
+                    alert(`✅ Đã thêm văn bản thành công! Phát hiện ${articles.length} điều khoản.`);
+                } else {
+                    const url = document.getElementById('docUrl').value.trim();
+                    
+                    if (!url) {
+                        alert('⚠️ Vui lòng nhập đường link văn bản!');
+                        addBtn.disabled = false;
+                        addBtn.textContent = '➕ Thêm văn bản';
+                        return;
+                    }
+
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        alert('⚠️ Đường link phải bắt đầu bằng http:// hoặc https://');
+                        addBtn.disabled = false;
+                        addBtn.textContent = '➕ Thêm văn bản';
+                        return;
+                    }
+
+                    newDoc = {
+                        id: Date.now(),
+                        title: title,
+                        type: type,
+                        year: yearNum,
+                        url: url,
+                        fileName: null,
+                        description: description,
+                        addedDate: new Date().toLocaleDateString('vi-VN'),
+                        content: null,
+                        articles: [],
+                        source: 'url'
+                    };
+
+                    alert('✅ Đã thêm văn bản thành công!');
+                }
+
+                documents.push(newDoc);
+                saveData();
+                updateUI();
+                updateYearFilter();
+
+                // Reset form
+                document.getElementById('docTitle').value = '';
+                document.getElementById('docYear').value = '';
+                document.getElementById('docUrl').value = '';
+                document.getElementById('docDescription').value = '';
+                document.getElementById('docFile').value = '';
+                selectedFileData = null;
+
+            } catch (error) {
+                alert('❌ Lỗi: ' + error.message);
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = '➕ Thêm văn bản';
+            }
+        }
+
+        // Delete document
         function deleteDocument(id) {
-            if (confirm('Bạn có chắc muốn xóa văn bản này?')) {
+            if (confirm('❓ Bạn có chắc muốn xóa văn bản này?')) {
                 documents = documents.filter(doc => doc.id !== id);
                 saveData();
                 updateUI();
+                updateYearFilter();
             }
         }
 
-        // Tìm kiếm
+        // Search documents
         async function searchDocuments() {
             const query = document.getElementById('searchQuery').value.trim();
             
             if (!query) {
-                alert('Vui lòng nhập từ khóa tìm kiếm!');
+                alert('⚠️ Vui lòng nhập từ khóa tìm kiếm!');
                 return;
             }
 
             if (documents.length === 0) {
-                alert('Chưa có văn bản nào trong hệ thống. Vui lòng thêm văn bản trước!');
+                alert('⚠️ Chưa có văn bản nào trong hệ thống!');
                 return;
             }
+
+            const resultsDiv = document.getElementById('searchResults');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            searchBtn.disabled = true;
+            searchBtn.textContent = '⏳ Đang tìm...';
+            resultsDiv.innerHTML = '<div class="loading">🔍 Đang quét nội dung văn bản (bao gồm file Word)</div>';
 
             searchCounter++;
             saveData();
             updateStats();
 
-            const resultsDiv = document.getElementById('searchResults');
-            resultsDiv.innerHTML = '<div class="loading">⏳ Đang tìm kiếm trong các văn bản...</div>';
-
-            // Mô phỏng tìm kiếm
-            setTimeout(() => {
+            setTimeout(async () => {
                 const results = [];
-                
-                documents.forEach(doc => {
-                    const lowerQuery = query.toLowerCase();
-                    const lowerTitle = doc.title.toLowerCase();
-                    
-                    if (lowerTitle.includes(lowerQuery)) {
-                        results.push({
-                            title: doc.title,
-                            url: doc.url,
-                            snippet: `Văn bản có chứa từ khóa "${query}". Nhấn vào link để xem chi tiết.`,
+                const lowerQuery = query.toLowerCase();
+
+                for (const doc of documents) {
+                    const matches = [];
+
+                    // Search in title
+                    if (doc.title.toLowerCase().includes(lowerQuery)) {
+                        matches.push({
+                            type: 'title',
+                            text: doc.title,
                             relevance: 'cao'
                         });
                     }
-                });
+
+                    // Search in description
+                    if (doc.description && doc.description.toLowerCase().includes(lowerQuery)) {
+                        matches.push({
+                            type: 'description',
+                            text: doc.description,
+                            relevance: 'trung bình'
+                        });
+                    }
+
+                    // Search in file content
+                    if (doc.source === 'file' && doc.content) {
+                        const matchingArticles = doc.articles.filter(article => 
+                            article.content.toLowerCase().includes(lowerQuery) ||
+                            article.title.toLowerCase().includes(lowerQuery)
+                        );
+
+                        matchingArticles.forEach(article => {
+                            matches.push({
+                                type: article.type,
+                                label: article.label,
+                                number: article.number,
+                                title: article.title,
+                                text: article.content,
+                                position: article.position,
+                                relevance: 'cao'
+                            });
+                        });
+
+                        // Search in full content if no articles found
+                        if (matchingArticles.length === 0) {
+                            const contentLower = doc.content.toLowerCase();
+                            const index = contentLower.indexOf(lowerQuery);
+                            if (index !== -1) {
+                                const start = Math.max(0, index - 100);
+                                const end = Math.min(doc.content.length, index + 400);
+                                const snippet = doc.content.substring(start, end);
+                                
+                                matches.push({
+                                    type: 'content',
+                                    text: snippet,
+                                    relevance: 'trung bình'
+                                });
+                            }
+                        }
+                    }
+
+                    if (matches.length > 0) {
+                        results.push({ document: doc, matches: matches });
+                    }
+                }
 
                 displaySearchResults(results, query);
-            }, 800);
+                searchBtn.disabled = false;
+                searchBtn.textContent = '🔍 Tìm kiếm';
+            }, 500);
         }
 
-        // Hiển thị kết quả tìm kiếm
+        // Display search results
         function displaySearchResults(results, query) {
             const resultsDiv = document.getElementById('searchResults');
             
             if (results.length === 0) {
                 resultsDiv.innerHTML = `
                     <div class="empty-state">
-                        <h3>😕 Không tìm thấy kết quả</h3>
-                        <p>Không tìm thấy văn bản nào chứa từ khóa "${query}"</p>
-                        <p style="margin-top: 10px; font-size: 0.9em;">Gợi ý: Thử tìm kiếm với từ khóa khác hoặc kiểm tra lại chính tả</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = `<h3 style="margin-bottom: 15px;">Tìm thấy ${results.length} kết quả cho "${query}":</h3>`;
-            
-            results.forEach(result => {
-                html += `
-                    <div class="result-item">
-                        <h3>${result.title}</h3>
-                        <p>${result.snippet}</p>
-                        <div class="source">
-                            <a href="${result.url}" target="_blank">🔗 Xem văn bản đầy đủ</a>
-                        </div>
-                    </div>
-                `;
-            });
-
-            resultsDiv.innerHTML = html;
-        }
-
-        // Cập nhật giao diện
-        function updateUI() {
-            updateDocumentList();
-            updateStats();
-        }
-
-        // Cập nhật danh sách văn bản
-        function updateDocumentList() {
-            const listDiv = document.getElementById('documentList');
-            
-            if (documents.length === 0) {
-                listDiv.innerHTML = '<div class="empty-state">Chưa có văn bản nào. Hãy thêm văn bản đầu tiên!</div>';
-                return;
-            }
-
-            let html = '';
-            documents.forEach(doc => {
-                html += `
-                    <div class="document-item">
-                        <div>
-                            <strong>${doc.title}</strong>
-                            <br>
-                            <small style="color: #999;">Thêm ngày: ${doc.addedDate}</small>
-                            <br>
-                            <a href="${doc.url}" target="_blank">🔗 Xem văn bản</a>
-                        </div>
-                        <button class="delete-btn" onclick="deleteDocument(${doc.id})">Xóa</button>
-                    </div>
-                `;
-            });
-
-            listDiv.innerHTML = html;
-        }
-
-        // Cập nhật thống kê
-        function updateStats() {
-            document.getElementById('docCount').textContent = documents.length;
-            document.getElementById('searchCount').textContent = searchCounter;
-        }
-
-        // Enter để submit
-        document.getElementById('docUrl').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addDocument();
-        });
-
-        document.getElementById('searchQuery').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchDocuments();
-        });
-
-        // Khởi tạo
-        loadData();
-    </script>
-</body>
-</html>
+                        <h3>😕 Không
