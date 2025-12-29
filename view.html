@@ -122,10 +122,12 @@
 
         @keyframes pulse {
             0%, 100% {
-                box-shadow: 0 2px 8px rgba(255, 152, 0, 0.4);
+                box-shadow: 0 3px 15px rgba(255, 152, 0, 0.5);
+                transform: scale(1);
             }
             50% {
-                box-shadow: 0 2px 15px rgba(255, 152, 0, 0.7);
+                box-shadow: 0 5px 25px rgba(255, 152, 0, 0.8);
+                transform: scale(1.02);
             }
         }
 
@@ -258,8 +260,8 @@
             // Update search info based on mode
             if (mode === 'article') {
                 document.getElementById('searchInfo').innerHTML = `
-                    📍 <strong>Đang xem:</strong> ${params.articleLabel} ${params.articleNumber} | 
-                    🎯 <strong>Vị trí được đánh dấu màu cam</strong>
+                    📍 <strong>Đang xem trực tiếp:</strong> ${params.articleLabel} ${params.articleNumber} | 
+                    🎯 <strong>Vị trí được đánh dấu màu cam và tự động scroll</strong>
                 `;
                 // Display content with article highlight
                 const highlightedContent = highlightArticle(doc.content, params.position, doc.articles);
@@ -268,7 +270,7 @@
                 // Search mode
                 document.getElementById('searchInfo').innerHTML = `
                     🔍 <strong>Từ khóa tìm kiếm:</strong> "${params.query}" | 
-                    📍 <strong>Vị trí khớp được đánh dấu màu cam</strong>
+                    📍 <strong>Vị trí khớp được đánh dấu màu cam và tự động scroll</strong>
                 `;
                 // Display content with search highlight
                 const highlightedContent = highlightContent(doc.content, params.query, params.position, doc.articles);
@@ -278,7 +280,7 @@
             // Scroll to target position after a short delay
             setTimeout(() => {
                 scrollToTarget();
-            }, 500);
+            }, 800);
         }
 
         // Highlight article in content
@@ -363,14 +365,24 @@
         function scrollToArticle(position) {
             const element = document.getElementById(`article-${position}`);
             if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Smooth scroll with offset for better visibility
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - 100;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
                 
-                // Briefly highlight the article
-                element.style.transition = 'all 0.3s';
+                // Highlight animation
+                element.style.transition = 'all 0.5s';
                 element.style.transform = 'scale(1.05)';
+                element.style.boxShadow = '0 5px 20px rgba(255, 152, 0, 0.6)';
+                
                 setTimeout(() => {
                     element.style.transform = 'scale(1)';
-                }, 500);
+                    element.style.boxShadow = '';
+                }, 1000);
             }
         }
 
