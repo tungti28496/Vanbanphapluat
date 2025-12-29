@@ -213,12 +213,12 @@
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 12px;
-            transition: background 0.2s;
-            cursor: pointer;
+            transition: all 0.3s;
         }
 
         .article-item:hover {
             background: #e3f2fd;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .article-header {
@@ -232,12 +232,36 @@
             font-weight: bold;
             color: #1e3c72;
             font-size: 1.1em;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .article-number:hover {
+            background: #1e3c72;
+            color: white;
+            transform: translateX(5px);
         }
 
         .article-preview {
             color: #666;
             line-height: 1.6;
             margin-top: 8px;
+            cursor: pointer;
+        }
+
+        .article-preview:hover {
+            color: #333;
+        }
+
+        .click-hint {
+            color: #999;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-top: 8px;
+            display: block;
         }
 
         .article-preview mark {
@@ -657,16 +681,20 @@
                     html += `
                         <div class="article-item">
                             <div class="article-header">
-                                <span class="article-number" onclick="viewArticle('${encodeURIComponent(doc.fileName)}', ${article.position}, '${article.label}', '${article.number}')" style="cursor: pointer; user-select: none;" title="Click để xem ${article.label} ${article.number}">
+                                <span class="article-number" 
+                                      onclick="viewArticle('${encodeURIComponent(doc.fileName)}', ${article.position}, '${article.label}', '${article.number}')" 
+                                      title="Click để xem trực tiếp ${article.label} ${article.number}">
                                     📌 ${article.label} ${article.number}
                                 </span>
                                 <button class="view-detail-btn" onclick="viewDocument('${encodeURIComponent(doc.fileName)}', '${query}', ${article.position})">
-                                    👁️ Xem chi tiết
+                                    👁️ Xem toàn bộ văn bản
                                 </button>
                             </div>
-                            <div class="article-preview">
+                            <div class="article-preview" 
+                                 onclick="viewArticle('${encodeURIComponent(doc.fileName)}', ${article.position}, '${article.label}', '${article.number}')">
                                 ${preview}${article.content.length > 300 ? '...' : ''}
                             </div>
+                            <span class="click-hint">💡 Click vào điều khoản hoặc nội dung để xem trực tiếp tại vị trí này</span>
                         </div>
                     `;
                 });
@@ -707,7 +735,26 @@
             sessionStorage.setItem('currentDocument', JSON.stringify({
                 doc: doc,
                 query: query,
-                position: position
+                position: position,
+                mode: 'search' // Chế độ tìm kiếm
+            }));
+
+            // Navigate to view page
+            window.location.href = 'view.html';
+        }
+
+        // View specific article
+        function viewArticle(fileName, position, label, number) {
+            const doc = documents.find(d => d.fileName === decodeURIComponent(fileName));
+            if (!doc) return;
+
+            // Save to sessionStorage
+            sessionStorage.setItem('currentDocument', JSON.stringify({
+                doc: doc,
+                position: position,
+                articleLabel: label,
+                articleNumber: number,
+                mode: 'article' // Chế độ xem điều khoản
             }));
 
             // Navigate to view page
