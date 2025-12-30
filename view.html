@@ -391,15 +391,9 @@
             document.getElementById('docContent').innerHTML = content;
 
             setTimeout(function() {
-                if (mode === 'full') {
-                    // Mode xem toàn bộ - scroll lên đầu
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    // Mode tìm kiếm hoặc xem điều khoản - scroll đến target
-                    var targetEl = document.querySelector('.target');
-                    if (targetEl) {
-                        scrollToPosition(targetEl, params.position);
-                    }
+                var targetEl = document.querySelector('.target');
+                if (targetEl) {
+                    scrollToPosition(targetEl, params.position);
                 }
             }, 500);
         }
