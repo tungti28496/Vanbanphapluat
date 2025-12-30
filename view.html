@@ -10,15 +10,105 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-right: 2px solid #dee2e6;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
             padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .sidebar-header h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-count {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .articles-list {
+            padding: 15px;
+        }
+        
+        .article-list-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #1e3c72;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .article-list-item:hover {
+            background: #e3f2fd;
+            border-left-color: #28a745;
+            transform: translateX(5px);
+        }
+        
+        .article-list-item.active {
+            background: #1e3c72;
+            color: white;
+            border-left-color: #28a745;
+        }
+        
+        .article-list-number {
+            font-weight: bold;
+            font-size: 1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .article-list-title {
+            font-size: 0.85em;
+            color: #666;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .article-list-item.active .article-list-title {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .main-content {
+            margin-left: 300px;
+            flex: 1;
         }
         
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            margin: 20px;
         }
         
         header {
@@ -68,44 +158,7 @@
         
         .search-info strong { color: #1e3c72; }
         
-        .article-navigation {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 5px solid #28a745;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .article-navigation h4 {
-            color: #28a745;
-            margin-bottom: 15px;
-            font-size: 1.1em;
-            position: sticky;
-            top: 0;
-            background: #f8f9fa;
-            padding-bottom: 10px;
-        }
-        
-        .article-link {
-            background: #e3f2fd;
-            border: 2px solid #1e3c72;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: inline-block;
-            margin: 4px;
-            text-decoration: none;
-            color: #1e3c72;
-            font-weight: 600;
-        }
-        
-        .article-link:hover {
-            background: #1e3c72;
-            color: white;
-            transform: translateY(-2px);
-        }
+
         
         .document-content {
             line-height: 1.9;
@@ -169,25 +222,60 @@
             color: #666;
             border-top: 1px solid #dee2e6;
         }
+        
+        @media (max-width: 968px) {
+            .sidebar {
+                width: 250px;
+            }
+            .main-content {
+                margin-left: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .articles-list {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="layout">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>📑 Danh mục điều khoản</h3>
+                <div class="sidebar-count" id="sidebarCount">Đang tải...</div>
+            </div>
+            <div class="articles-list" id="articlesList"></div>
+        </div>
+        
+        <div class="main-content">
+            <div class="container">
         <header>
             <a href="index.html" class="back-button">← Quay lại</a>
             <h1 id="docTitle">Đang tải...</h1>
         </header>
 
-        <div class="content">
-            <div class="document-meta" id="docMeta"></div>
-            <div id="navContainer"></div>
-            <div class="search-info" id="searchInfo"></div>
-            <div class="document-content" id="docContent"></div>
-        </div>
+                <div class="content">
+                    <div class="document-meta" id="docMeta"></div>
+                    <div class="search-info" id="searchInfo"></div>
+                    <div class="document-content" id="docContent"></div>
+                </div>
 
-        <footer>
-            <p>Hệ thống tra cứu văn bản © 2024</p>
-        </footer>
+                <footer>
+                    <p>Hệ thống tra cứu văn bản © 2024</p>
+                </footer>
+            </div>
+        </div>
     </div>
 
     <button class="scroll-to-top" id="scrollBtn">↑</button>
@@ -220,26 +308,42 @@
             metaHTML += '<div class="meta-item"><strong>Điều khoản:</strong> ' + doc.articles.length + '</div>';
             document.getElementById('docMeta').innerHTML = metaHTML;
 
+            // Create sidebar navigation
             if (doc.articles && doc.articles.length > 0) {
-                var navHTML = '<div class="article-navigation">';
-                navHTML += '<h4>📑 Danh mục (' + doc.articles.length + ' điều khoản)</h4>';
-                
                 var unique = {};
+                var uniqueList = [];
+                
                 for (var i = 0; i < doc.articles.length; i++) {
                     var art = doc.articles[i];
                     var key = art.label + art.number;
                     if (!unique[key]) {
                         unique[key] = art;
-                        navHTML += '<a href="#" class="article-link" onclick="scrollTo' + art.position + '(); return false;">';
-                        navHTML += art.label + ' ' + art.number + '</a>';
+                        uniqueList.push(art);
                     }
                 }
-                navHTML += '</div>';
-                document.getElementById('navContainer').innerHTML = navHTML;
+                
+                document.getElementById('sidebarCount').textContent = 'Tổng: ' + uniqueList.length + ' điều khoản';
+                
+                var listHTML = '';
+                for (var j = 0; j < uniqueList.length; j++) {
+                    var article = uniqueList[j];
+                    var articleTitle = article.title || '';
+                    if (articleTitle.length > 50) {
+                        articleTitle = articleTitle.substring(0, 50) + '...';
+                    }
+                    
+                    listHTML += '<div class="article-list-item" id="listitem' + article.position + '" onclick="scrollToArticle(' + article.position + ')">';
+                    listHTML += '<span class="article-list-number">' + article.label + ' ' + article.number + '</span>';
+                    listHTML += '<span class="article-list-title">' + articleTitle + '</span>';
+                    listHTML += '</div>';
+                }
+                
+                document.getElementById('articlesList').innerHTML = listHTML;
 
+                // Create scroll functions
                 for (var key in unique) {
                     var pos = unique[key].position;
-                    window['scrollTo' + pos] = createScrollFunction(pos);
+                    window['scrollToArticle' + pos] = createScrollFunction(pos);
                 }
             }
 
@@ -289,28 +393,47 @@
             setTimeout(function() {
                 var targetEl = document.querySelector('.target');
                 if (targetEl) {
-                    var pos = targetEl.getBoundingClientRect().top + window.pageYOffset - 150;
-                    window.scrollTo({ top: pos, behavior: 'smooth' });
+                    scrollToPosition(targetEl, params.position);
                 }
             }, 500);
         }
 
+        function scrollToArticle(position) {
+            var el = document.getElementById('pos' + position);
+            if (el) {
+                scrollToPosition(el, position);
+            }
+        }
+
+        function scrollToPosition(element, position) {
+            // Scroll to element
+            var pos = element.getBoundingClientRect().top + window.pageYOffset - 150;
+            window.scrollTo({ top: pos, behavior: 'smooth' });
+            
+            // Highlight effect
+            element.style.transition = 'all 0.5s';
+            element.style.transform = 'scale(1.1)';
+            element.style.boxShadow = '0 5px 20px rgba(255,152,0,0.6)';
+            
+            setTimeout(function() {
+                element.style.transform = 'scale(1)';
+                element.style.boxShadow = '';
+            }, 1000);
+            
+            // Update active item in sidebar
+            var allItems = document.querySelectorAll('.article-list-item');
+            for (var i = 0; i < allItems.length; i++) {
+                allItems[i].classList.remove('active');
+            }
+            var activeItem = document.getElementById('listitem' + position);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+        }
+
         function createScrollFunction(position) {
             return function() {
-                var el = document.getElementById('pos' + position);
-                if (el) {
-                    var pos = el.getBoundingClientRect().top + window.pageYOffset - 150;
-                    window.scrollTo({ top: pos, behavior: 'smooth' });
-                    
-                    el.style.transition = 'all 0.5s';
-                    el.style.transform = 'scale(1.1)';
-                    el.style.boxShadow = '0 5px 20px rgba(255,152,0,0.6)';
-                    
-                    setTimeout(function() {
-                        el.style.transform = 'scale(1)';
-                        el.style.boxShadow = '';
-                    }, 1000);
-                }
+                scrollToArticle(position);
             };
         }
 
