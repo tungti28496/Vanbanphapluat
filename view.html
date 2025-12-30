@@ -5,38 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem chi tiết văn bản</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
             padding: 20px;
         }
-
+        
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
         }
-
+        
         header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 30px 40px;
+            border-radius: 15px 15px 0 0;
         }
-
-        header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
+        
+        header h1 { font-size: 2em; margin-bottom: 10px; }
+        
         .back-button {
             display: inline-block;
             margin-bottom: 15px;
@@ -46,17 +39,12 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            transition: background 0.2s;
         }
-
-        .back-button:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .content {
-            padding: 40px;
-        }
-
+        
+        .back-button:hover { background: rgba(255,255,255,0.3); }
+        
+        .content { padding: 40px; }
+        
         .document-meta {
             background: #f8f9fa;
             padding: 20px;
@@ -64,21 +52,11 @@
             margin-bottom: 30px;
             border-left: 5px solid #1e3c72;
         }
-
-        .document-meta h3 {
-            color: #1e3c72;
-            margin-bottom: 15px;
-        }
-
-        .meta-item {
-            margin-bottom: 10px;
-            color: #666;
-        }
-
-        .meta-item strong {
-            color: #333;
-        }
-
+        
+        .document-meta h3 { color: #1e3c72; margin-bottom: 15px; }
+        .meta-item { margin-bottom: 10px; color: #666; }
+        .meta-item strong { color: #333; }
+        
         .search-info {
             background: #fff3cd;
             border: 1px solid #ffc107;
@@ -87,11 +65,48 @@
             margin-bottom: 25px;
             color: #856404;
         }
-
-        .search-info strong {
-            color: #1e3c72;
+        
+        .search-info strong { color: #1e3c72; }
+        
+        .article-navigation {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #28a745;
+            max-height: 500px;
+            overflow-y: auto;
         }
-
+        
+        .article-navigation h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            background: #f8f9fa;
+            padding-bottom: 10px;
+        }
+        
+        .article-link {
+            background: #e3f2fd;
+            border: 2px solid #1e3c72;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 4px;
+            text-decoration: none;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+        
+        .article-link:hover {
+            background: #1e3c72;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
         .document-content {
             line-height: 1.9;
             font-size: 1.05em;
@@ -99,17 +114,15 @@
             word-wrap: break-word;
             color: #333;
         }
-
+        
         .document-content .highlight {
             background: #ffeb3b;
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: 600;
-            border: 2px solid #fdd835;
-            box-shadow: 0 2px 5px rgba(253, 216, 53, 0.3);
         }
-
-        .document-content .target-position {
+        
+        .document-content .target {
             background: #ff9800;
             padding: 6px 12px;
             border-radius: 6px;
@@ -117,42 +130,38 @@
             border: 3px solid #f57c00;
             box-shadow: 0 3px 15px rgba(255, 152, 0, 0.5);
             animation: pulse 2s infinite;
-            display: inline-block;
         }
-
+        
         @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 3px 15px rgba(255, 152, 0, 0.5);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 5px 25px rgba(255, 152, 0, 0.8);
-                transform: scale(1.02);
-            }
+            0%, 100% { box-shadow: 0 3px 15px rgba(255, 152, 0, 0.5); }
+            50% { box-shadow: 0 5px 25px rgba(255, 152, 0, 0.8); }
         }
-
-        .scroll-indicator {
+        
+        .scroll-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #1e3c72;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            font-weight: 600;
-            animation: bounce 2s infinite;
+            display: none;
+            z-index: 999;
         }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+        
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
         }
-
+        
+        .scroll-to-top.show {
+            display: block;
+        }
+        
         footer {
             background: #f8f9fa;
             padding: 20px;
@@ -160,235 +169,168 @@
             color: #666;
             border-top: 1px solid #dee2e6;
         }
-
-        @media (max-width: 768px) {
-            .content {
-                padding: 20px;
-            }
-
-            header h1 {
-                font-size: 1.5em;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <a href="index.html" class="back-button">← Quay lại tìm kiếm</a>
-            <h1 id="docTitle">Đang tải văn bản...</h1>
+            <a href="index.html" class="back-button">← Quay lại</a>
+            <h1 id="docTitle">Đang tải...</h1>
         </header>
 
         <div class="content">
             <div class="document-meta" id="docMeta"></div>
+            <div id="navContainer"></div>
             <div class="search-info" id="searchInfo"></div>
             <div class="document-content" id="docContent"></div>
         </div>
 
         <footer>
-            <p>Hệ thống tra cứu văn bản pháp luật © 2024</p>
+            <p>Hệ thống tra cứu văn bản © 2024</p>
         </footer>
     </div>
 
-    <div class="scroll-indicator" id="scrollIndicator" style="display: none;">
-        ↓ Vị trí từ khóa bên dưới
-    </div>
+    <button class="scroll-to-top" id="scrollBtn">↑</button>
 
     <script>
-        window.addEventListener('load', () => {
+        window.onload = function() {
             loadDocument();
-        });
+        };
 
         function loadDocument() {
-            const data = sessionStorage.getItem('currentDocument');
+            var data = sessionStorage.getItem('currentDocument');
             
             if (!data) {
-                document.getElementById('docTitle').textContent = 'Không tìm thấy văn bản';
-                document.getElementById('docContent').innerHTML = `
-                    <div style="text-align: center; padding: 60px; color: #999;">
-                        <h3>❌ Lỗi</h3>
-                        <p>Không tìm thấy thông tin văn bản. Vui lòng quay lại trang tìm kiếm.</p>
-                        <a href="index.html" style="display: inline-block; margin-top: 20px; padding: 10px 25px; background: #1e3c72; color: white; text-decoration: none; border-radius: 8px;">← Quay lại</a>
-                    </div>
-                `;
+                document.getElementById('docTitle').textContent = 'Lỗi';
+                document.getElementById('docContent').innerHTML = 
+                    '<div style="text-align:center;padding:60px;color:#999">' +
+                    '<h3>❌ Không tìm thấy dữ liệu</h3>' +
+                    '<p><a href="index.html">← Quay lại</a></p></div>';
                 return;
             }
 
-            const params = JSON.parse(data);
-            const doc = params.doc;
-            const mode = params.mode || 'search';
+            var params = JSON.parse(data);
+            var doc = params.doc;
+            var mode = params.mode || 'search';
 
-            // Update title
             document.getElementById('docTitle').textContent = doc.name;
 
-            // Update metadata
-            document.getElementById('docMeta').innerHTML = `
-                <h3>📋 Thông tin văn bản</h3>
-                <div class="meta-item"><strong>Tên file:</strong> ${doc.fileName}</div>
-                <div class="meta-item"><strong>Số điều khoản:</strong> ${doc.articles.length}</div>
-                <div class="meta-item"><strong>GitHub:</strong> <a href="${doc.url}" target="_blank" style="color: #1e3c72;">Xem trên GitHub</a></div>
-            `;
+            var metaHTML = '<h3>📋 Thông tin văn bản</h3>';
+            metaHTML += '<div class="meta-item"><strong>File:</strong> ' + doc.fileName + '</div>';
+            metaHTML += '<div class="meta-item"><strong>Điều khoản:</strong> ' + doc.articles.length + '</div>';
+            document.getElementById('docMeta').innerHTML = metaHTML;
 
-            // Create article navigation
             if (doc.articles && doc.articles.length > 0) {
-                let navHTML = '<div class="article-navigation"><h4>📑 Danh mục điều khoản (Click để di chuyển)</h4>';
+                var navHTML = '<div class="article-navigation">';
+                navHTML += '<h4>📑 Danh mục (' + doc.articles.length + ' điều khoản)</h4>';
                 
-                const uniqueArticles = [];
-                doc.articles.forEach(article => {
-                    const key = `${article.label}-${article.number}`;
-                    if (!uniqueArticles.find(a => `${a.label}-${a.number}` === key)) {
-                        uniqueArticles.push(article);
+                var unique = {};
+                for (var i = 0; i < doc.articles.length; i++) {
+                    var art = doc.articles[i];
+                    var key = art.label + art.number;
+                    if (!unique[key]) {
+                        unique[key] = art;
+                        navHTML += '<a href="#" class="article-link" onclick="scrollTo' + art.position + '(); return false;">';
+                        navHTML += art.label + ' ' + art.number + '</a>';
                     }
-                });
-
-                uniqueArticles.slice(0, 20).forEach(article => {
-                    navHTML += `
-                        <a href="#article-${article.position}" class="article-link" onclick="scrollToArticle(${article.position})">
-                            ${article.label} ${article.number}
-                        </a>
-                    `;
-                });
-
-                if (doc.articles.length > 20) {
-                    navHTML += `<p style="color: #666; margin-top: 10px; font-size: 0.9em;">... và ${doc.articles.length - 20} điều khoản khác</p>`;
                 }
-
                 navHTML += '</div>';
-                document.getElementById('docMeta').insertAdjacentHTML('afterend', navHTML);
-            }
+                document.getElementById('navContainer').innerHTML = navHTML;
 
-            // Update search info based on mode
-            if (mode === 'article') {
-                document.getElementById('searchInfo').innerHTML = `
-                    📍 <strong>Đang xem trực tiếp:</strong> ${params.articleLabel} ${params.articleNumber} | 
-                    🎯 <strong>Vị trí được đánh dấu màu cam và tự động scroll</strong>
-                `;
-                // Display content with article highlight
-                const highlightedContent = highlightArticle(doc.content, params.position, doc.articles);
-                document.getElementById('docContent').innerHTML = highlightedContent;
-            } else {
-                // Search mode
-                document.getElementById('searchInfo').innerHTML = `
-                    🔍 <strong>Từ khóa tìm kiếm:</strong> "${params.query}" | 
-                    📍 <strong>Vị trí khớp được đánh dấu màu cam và tự động scroll</strong>
-                `;
-                // Display content with search highlight
-                const highlightedContent = highlightContent(doc.content, params.query, params.position, doc.articles);
-                document.getElementById('docContent').innerHTML = highlightedContent;
-            }
-
-            // Scroll to target position after a short delay
-            setTimeout(() => {
-                scrollToTarget();
-            }, 800);
-        }
-
-        // Highlight article in content
-        function highlightArticle(content, targetPosition, articles) {
-            let result = content;
-            
-            // Sort articles by position (descending)
-            const sortedArticles = [...articles].sort((a, b) => b.position - a.position);
-
-            // Wrap each article with anchor and highlighting
-            sortedArticles.forEach(article => {
-                const isTarget = Math.abs(article.position - targetPosition) < 10;
-                const before = result.substring(0, article.position);
-                const articleText = article.fullMatch;
-                const after = result.substring(article.position + articleText.length);
-                
-                const wrapped = isTarget
-                    ? `<span id="article-${article.position}" class="highlight target-position" id="targetMatch">${articleText}</span>`
-                    : `<span id="article-${article.position}" class="highlight">${articleText}</span>`;
-                
-                result = before + wrapped + after;
-            });
-
-            return result;
-        }
-
-        function highlightContent(content, query, targetPosition, articles) {
-            // First highlight all articles
-            let result = highlightArticle(content, -1, articles);
-
-            // Then highlight search query
-            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
-            let matches = [];
-            let match;
-            
-            const tempRegex = new RegExp(regex);
-            const plainContent = content; // Use original content for position matching
-            
-            while ((match = tempRegex.exec(plainContent)) !== null) {
-                matches.push({
-                    start: match.index,
-                    end: match.index + match[0].length,
-                    text: match[0],
-                    isTarget: Math.abs(match.index - targetPosition) < 50
-                });
-            }
-
-            // Highlight the target match differently
-            matches.forEach(m => {
-                if (m.isTarget) {
-                    const searchRegex = new RegExp(`(<span[^>]*>)?${escapeRegex(m.text)}(</span>)?`, 'gi');
-                    result = result.replace(searchRegex, (matched) => {
-                        if (matched.includes('<span')) return matched;
-                        return `<span class="highlight target-position" id="targetMatch">${m.text}</span>`;
-                    });
+                for (var key in unique) {
+                    var pos = unique[key].position;
+                    window['scrollTo' + pos] = createScrollFunction(pos);
                 }
+            }
+
+            var infoHTML = '';
+            if (mode === 'article') {
+                infoHTML = '📍 <strong>Đang xem:</strong> ' + params.articleLabel + ' ' + 
+                          params.articleNumber + ' | 🎯 <strong>Được đánh dấu màu cam</strong>';
+            } else {
+                infoHTML = '🔍 <strong>Từ khóa:</strong> "' + params.query + '" | 🎯 <strong>Vị trí màu cam</strong>';
+            }
+            document.getElementById('searchInfo').innerHTML = infoHTML;
+
+            var content = doc.content;
+            var sortedArticles = doc.articles.slice().sort(function(a, b) {
+                return b.position - a.position;
             });
 
-            return result;
-        }
-
-        function scrollToTarget() {
-            const target = document.getElementById('targetMatch');
-            if (target) {
-                // Show scroll indicator first
-                const indicator = document.getElementById('scrollIndicator');
-                indicator.style.display = 'block';
-
-                // Smooth scroll to target
-                setTimeout(() => {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Hide indicator after scrolling
-                    setTimeout(() => {
-                        indicator.style.display = 'none';
-                    }, 3000);
-                }, 100);
+            for (var i = 0; i < sortedArticles.length; i++) {
+                var art = sortedArticles[i];
+                var isTarget = false;
+                
+                if (mode === 'article') {
+                    isTarget = Math.abs(art.position - params.position) < 20;
+                }
+                
+                var before = content.substring(0, art.position);
+                var text = art.fullMatch;
+                var after = content.substring(art.position + text.length);
+                
+                var wrapped = '<span id="pos' + art.position + '" class="' + 
+                             (isTarget ? 'target' : 'highlight') + '">' + text + '</span>';
+                content = before + wrapped + after;
             }
-        }
 
-        // Scroll to specific article
-        function scrollToArticle(position) {
-            const element = document.getElementById(`article-${position}`);
-            if (element) {
-                // Smooth scroll with offset for better visibility
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - 100;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
+            if (mode === 'search' && params.query) {
+                var regex = new RegExp('(' + escapeRegex(params.query) + ')', 'gi');
+                content = content.replace(regex, function(match, p1, offset) {
+                    if (Math.abs(offset - params.position) < 50) {
+                        return '<span class="target">' + match + '</span>';
+                    }
+                    return match;
                 });
-                
-                // Highlight animation
-                element.style.transition = 'all 0.5s';
-                element.style.transform = 'scale(1.05)';
-                element.style.boxShadow = '0 5px 20px rgba(255, 152, 0, 0.6)';
-                
-                setTimeout(() => {
-                    element.style.transform = 'scale(1)';
-                    element.style.boxShadow = '';
-                }, 1000);
             }
+
+            document.getElementById('docContent').innerHTML = content;
+
+            setTimeout(function() {
+                var targetEl = document.querySelector('.target');
+                if (targetEl) {
+                    var pos = targetEl.getBoundingClientRect().top + window.pageYOffset - 150;
+                    window.scrollTo({ top: pos, behavior: 'smooth' });
+                }
+            }, 500);
         }
 
-        function escapeRegex(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        function createScrollFunction(position) {
+            return function() {
+                var el = document.getElementById('pos' + position);
+                if (el) {
+                    var pos = el.getBoundingClientRect().top + window.pageYOffset - 150;
+                    window.scrollTo({ top: pos, behavior: 'smooth' });
+                    
+                    el.style.transition = 'all 0.5s';
+                    el.style.transform = 'scale(1.1)';
+                    el.style.boxShadow = '0 5px 20px rgba(255,152,0,0.6)';
+                    
+                    setTimeout(function() {
+                        el.style.transform = 'scale(1)';
+                        el.style.boxShadow = '';
+                    }, 1000);
+                }
+            };
         }
+
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        var scrollBtn = document.getElementById('scrollBtn');
+        
+        scrollBtn.onclick = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.onscroll = function() {
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.add('show');
+            } else {
+                scrollBtn.classList.remove('show');
+            }
+        };
     </script>
 </body>
 </html>
